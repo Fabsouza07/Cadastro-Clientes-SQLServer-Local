@@ -1,0 +1,13 @@
+# Saídas de compilação e dependências locais
+target/
+
+# Metadados das IDEs
+.idea/
+.vs/
+.vscode/
+*.iml
+
+# Arquivos temporários do sistema
+*.log
+*.tmp
+Thumbs.db
