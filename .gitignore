@@ -1,5 +1,6 @@
 # Saídas de compilação e dependências locais
 target/
+.env
 
 # Metadados das IDEs
 .idea/

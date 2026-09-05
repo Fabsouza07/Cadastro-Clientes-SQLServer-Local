@@ -8,6 +8,26 @@ Projeto local e educacional em Java 25, Maven e JDBC.
    variáveis de ambiente, use `SQLSERVER_DB_URL`, `SQLSERVER_DB_USUARIO` e `SQLSERVER_DB_SENHA`.
 3. No terminal da pasta, execute: `mvn clean compile exec:java`.
 
+## Docker
+
+O banco pode ser iniciado e configurado automaticamente com:
+
+```bash
+copy .env.example .env
+# Edite .env e defina uma senha forte para MSSQL_SA_PASSWORD
+docker compose up -d db db-init
+```
+
+Para executar também a aplicação Swing, disponibilize um servidor X no Windows
+(por exemplo, VcXsrv ou Xming), configure `DISPLAY` se necessário e execute:
+
+```bash
+docker compose --profile desktop up --build
+```
+
+Dentro do Compose, a aplicação se conecta ao banco pelo host `db` e porta `1433`.
+Do Windows, o mesmo banco fica disponível em `localhost:14330`.
+
 Seu JDK 26 pode compilar o projeto porque o Maven usa `release 25`.
 
 ## Acesso ao sistema

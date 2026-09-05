@@ -1,0 +1,12 @@
+.git
+.idea
+.vs
+.vscode
+.devcontainer
+target
+bin
+obj
+*.user
+*.suo
+clientes.csv
+
