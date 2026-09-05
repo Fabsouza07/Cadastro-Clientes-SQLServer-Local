@@ -25,6 +25,9 @@ Para executar também a aplicação Swing, disponibilize um servidor X no Window
 docker compose --profile desktop up --build
 ```
 
+No VcXsrv/Xming, permita conexões do Docker. Se iniciar diretamente com
+`docker run`, informe também `-e DISPLAY=host.docker.internal:0.0`.
+
 Dentro do Compose, a aplicação se conecta ao banco pelo host `db` e porta `1433`.
 Do Windows, o mesmo banco fica disponível em `localhost:14330`.
 

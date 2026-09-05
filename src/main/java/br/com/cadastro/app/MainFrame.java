@@ -52,7 +52,10 @@ final class MainFrame extends JFrame {
     this.usuario = usuario;
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     setUndecorated(true); // Remove e, portanto, desabilita os controles nativos da janela.
-    setExtendedState(MAXIMIZED_BOTH);
+    // Tamanho inicial para ambientes X11 sem gerenciador de janelas, como o VcXsrv.
+    // A maximização é feita depois que a janela é exibida.
+    setSize(1280, 800);
+    setLocationRelativeTo(null);
     addWindowListener(
         new WindowAdapter() {
           @Override

@@ -49,7 +49,14 @@ public final class Main {
 
   private static void aplicarTema() {
     try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      // O container usa Linux e não possui o tema nativo nem a fonte do Windows.
+      // Nimbus mantém métricas e espaçamentos mais estáveis nesse ambiente;
+      // fora do container, preservamos o tema nativo do sistema operacional.
+      String sistema = System.getProperty("os.name", "").toLowerCase();
+      String tema = sistema.contains("linux")
+          ? "javax.swing.plaf.nimbus.NimbusLookAndFeel"
+          : UIManager.getSystemLookAndFeelClassName();
+      UIManager.setLookAndFeel(tema);
     } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException ignored) {
       // Usa o tema padrão caso o tema do sistema não esteja disponível.
     }

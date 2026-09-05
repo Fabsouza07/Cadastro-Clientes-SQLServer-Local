@@ -73,7 +73,13 @@ final class LoginFrame extends JFrame {
   }
 
   private void abrir(Usuario usuario) {
-    SwingUtilities.invokeLater(() -> { dispose(); new MainFrame(usuario).setVisible(true); });
+    SwingUtilities.invokeLater(
+        () -> {
+          dispose();
+          MainFrame principal = new MainFrame(usuario);
+          principal.setVisible(true);
+          principal.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        });
   }
 
   private void executar(Tarefa tarefa) {
