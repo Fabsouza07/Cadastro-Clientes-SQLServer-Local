@@ -20,6 +20,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
@@ -52,10 +53,9 @@ final class MainFrame extends JFrame {
     this.usuario = usuario;
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     setUndecorated(true); // Remove e, portanto, desabilita os controles nativos da janela.
-    // Tamanho inicial para ambientes X11 sem gerenciador de janelas, como o VcXsrv.
-    // A maximização é feita depois que a janela é exibida.
-    setSize(1280, 800);
-    setLocationRelativeTo(null);
+    // O VcXsrv pode não ter gerenciador de janelas; ocupa a tela diretamente
+    // para evitar maximização incompleta e faixas de outra janela no topo.
+    setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
     addWindowListener(
         new WindowAdapter() {
           @Override
@@ -202,6 +202,8 @@ final class MainFrame extends JFrame {
     p.add(top, BorderLayout.NORTH);
     table.setRowHeight(38);
     table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+    table.setBackground(Color.WHITE);
+    table.setFillsViewportHeight(true);
     table.setForeground(TEXT);
     table.setSelectionBackground(new Color(219, 234, 254));
     table.setSelectionForeground(TEXT);
@@ -212,7 +214,9 @@ final class MainFrame extends JFrame {
     table.setAutoCreateRowSorter(true);
     table.getColumnModel().getColumn(0).setMaxWidth(70);
     table.getColumnModel().getColumn(2).setMaxWidth(90);
-    p.add(new JScrollPane(table), BorderLayout.CENTER);
+    JScrollPane scroll = new JScrollPane(table);
+    scroll.getViewport().setBackground(Color.WHITE);
+    p.add(scroll, BorderLayout.CENTER);
     JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT, 9, 0));
     bottom.setOpaque(false);
     JButton edit = secondary("Editar");
@@ -546,6 +550,10 @@ final class MainFrame extends JFrame {
     b.setBackground(Color.WHITE);
     b.setFocusPainted(false);
     b.setBorderPainted(false);
+    b.setContentAreaFilled(false);
+    b.setOpaque(false);
+    b.setFocusable(false);
+    b.setUI(new BasicButtonUI());
     b.addActionListener(e -> action.run());
     return b;
   }

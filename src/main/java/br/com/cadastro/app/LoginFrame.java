@@ -78,7 +78,6 @@ final class LoginFrame extends JFrame {
           dispose();
           MainFrame principal = new MainFrame(usuario);
           principal.setVisible(true);
-          principal.setExtendedState(JFrame.MAXIMIZED_BOTH);
         });
   }
 
