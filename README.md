@@ -1,47 +1,77 @@
-# Sistema Cadastro Clientes — SQL Server 2025
+# Sistema de Cadastro de Clientes — Go e SQL Server LocalDB
 
-Projeto local e educacional em Java 25, Maven e JDBC.
+Aplicação web local desenvolvida em **Go (Golang)** conectada ao **Microsoft SQL Server LocalDB**, com interface web responsiva e sem dependências externas.
 
-## Preparação
-1. Execute `sql/criar_banco.sql` no SQL Server 2025.
-2. Edite `src/main/resources/config.properties` com usuário e senha locais. Se preferir
-   variáveis de ambiente, use `SQLSERVER_DB_URL`, `SQLSERVER_DB_USUARIO` e `SQLSERVER_DB_SENHA`.
-3. No terminal da pasta, execute: `mvn clean compile exec:java`.
+---
 
-## Docker
+## 🚀 Como Executar
 
-O banco pode ser iniciado e configurado automaticamente com:
+### 1. Execução Rápida (Recomendada)
+Basta dar dois cliques no arquivo:
+* **`executar.bat`**: Inicia a instância do LocalDB, sobe a aplicação Go na porta `8080` e abre automaticamente no **Google Chrome**.
 
-```bash
-copy .env.example .env
-# Edite .env e defina uma senha forte para MSSQL_SA_PASSWORD
-docker compose up -d db db-init
+### 2. Execução via PowerShell
+```powershell
+.\iniciar-go-localdb.ps1
+```
+Acesse no navegador: <http://127.0.0.1:8080>
+
+### 3. Execução com SQL Server Express / Servidor Externo
+Por padrão, a aplicação pode se conectar a instâncias completas do SQL Server configurando as variáveis de ambiente:
+```powershell
+$env:SQLSERVER_SERVER = 'localhost\SQLEXPRESS'
+$env:SQLSERVER_DATABASE = 'CadastroClientes'
+$env:APP_ADDR = ':8080'
+go run .\cmd\cadastro-clientes
+```
+Consulte o arquivo [`.env.example`](.env.example) para mais opções de conexão.
+
+---
+
+## 🌐 Integração com IIS / IIS Express (Proxy Reverso)
+
+A aplicação pode rodar atrás do IIS utilizando regras de proxy reverso (`web.config`):
+
+* **IIS Express:**
+  ```powershell
+  .\iniciar-iisexpress.ps1
+  ```
+  Acesse em: <http://localhost:8088>
+
+* **IIS Completo:**
+  Execute como Administrador no PowerShell:
+  ```powershell
+  .\configurar-iis.ps1
+  ```
+
+---
+
+## 🔐 Acesso e Segurança
+
+* **Primeiro Acesso:**
+  No primeiro acesso, informe um login e uma senha com no mínimo 8 caracteres. Esse primeiro usuário é criado automaticamente como **Administrador**.
+* **Perfis de Usuário:**
+  * **Administrador:** Tem acesso à gestão de usuários (criação e exclusão de operadores, redefinição de senhas) e exportação de clientes para CSV.
+  * **Operador:** Tem acesso ao painel geral e operações de CRUD dos clientes.
+* **Segurança de Senhas:**
+  As senhas são protegidas com **PBKDF2-HMAC-SHA256** (210.000 iterações com salt aleatório de 16 bytes).
+* **Proteção contra Força Bruta:**
+  Após três tentativas consecutivas de senha incorreta, o usuário é bloqueado por 10 minutos (utilizando o relógio do SQL Server via `SYSUTCDATETIME()`).
+
+---
+
+## 📦 Compilação do Executável
+
+Para gerar um novo executável Windows em `bin/cadastro-clientes.exe`:
+
+```powershell
+go build -o .\bin\cadastro-clientes.exe .\cmd\cadastro-clientes
 ```
 
-Para executar também a aplicação Swing, disponibilize um servidor X no Windows
-(por exemplo, VcXsrv ou Xming), configure `DISPLAY` se necessário e execute:
+---
 
-```bash
-docker compose --profile desktop up --build
-```
+## 🗄️ Estrutura do Banco de Dados
 
-No VcXsrv/Xming, permita conexões do Docker. Se iniciar diretamente com
-`docker run`, informe também `-e DISPLAY=host.docker.internal:0.0`.
-
-Dentro do Compose, a aplicação se conecta ao banco pelo host `db` e porta `1433`.
-Do Windows, o mesmo banco fica disponível em `localhost:14330`.
-
-Seu JDK 26 pode compilar o projeto porque o Maven usa `release 25`.
-
-## Acesso ao sistema
-No primeiro acesso, informe um login e uma senha de pelo menos 8 caracteres. Esse primeiro usuário é
-criado como **administrador**. Pela opção **Usuários**, o administrador pode criar e excluir operadores
-e alterar senhas. Operadores podem usar o cadastro de clientes, mas não gerenciam usuários nem exportam CSV.
-Os usuários desta aplicação ficam na tabela `dbo.usuarios_cadastro_clientes`, separada de outros sistemas
-que usam o mesmo banco.
-Após três tentativas de senha incorretas, o login é bloqueado por 10 minutos. A contagem e o tempo de
-bloqueio usam o relógio do SQL Server, não o relógio do computador que executa a aplicação.
-
-## Recursos
-CRUD completo, autenticação de usuários, confirmação de alteração/exclusão/saída, pesquisa, ordenação,
-estatísticas, exportação CSV para administradores e validações.
+* **`dbo.clientes`**: Armazena os clientes (nome, idade, cidade, e-mail único, telefone fixo e celular).
+* **`dbo.usuarios_cadastro_clientes`**: Armazena os operadores e administradores do sistema.
+* O script de criação das tabelas está disponível em [`sql/criar_banco.sql`](sql/criar_banco.sql). Ao iniciar, a aplicação também verifica e inicializa automaticamente as tabelas caso não existam.
