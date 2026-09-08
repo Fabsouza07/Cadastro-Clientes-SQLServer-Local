@@ -233,6 +233,10 @@ func (a *App) dashboard(w http.ResponseWriter, r *http.Request) {
 		rows.Scan(&c.ID, &c.Name, &c.Age, &c.City, &c.Email, &c.Phone, &c.Mobile)
 		cs = append(cs, c)
 	}
+	if err := rows.Err(); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 	var s Stats
 	a.db.QueryRow(`SELECT COUNT(*),COALESCE(AVG(idade),0) FROM clientes`).Scan(&s.Total, &s.Average)
 	a.db.QueryRow(`SELECT TOP 1 nome FROM clientes ORDER BY idade DESC,nome`).Scan(&s.Oldest)
@@ -346,13 +350,21 @@ func (a *App) users(w http.ResponseWriter, r *http.Request) {
 	if !ok || !u.Admin {
 		return
 	}
-	rows, _ := a.db.Query(`SELECT id,login,administrador FROM usuarios_cadastro_clientes ORDER BY administrador DESC,login`)
+	rows, err := a.db.Query(`SELECT id,login,administrador FROM usuarios_cadastro_clientes ORDER BY administrador DESC,login`)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 	defer rows.Close()
 	var us []User
 	for rows.Next() {
 		var x User
 		rows.Scan(&x.ID, &x.Login, &x.Admin)
 		us = append(us, x)
+	}
+	if err := rows.Err(); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
 	}
 	a.render(w, `{{define "content"}}<div class="top"><h1>Usuários</h1></div><div class="panel form"><h2>Novo operador</h2><form method="post" action="/usuarios/salvar"><label>Login</label><input name="login"><label>Senha (mínimo de 8 caracteres)</label><input type="password" name="senha"><button class="btn">Criar operador</button></form></div><div class="panel" style="margin-top:18px"><table><tr><th>ID</th><th>Login</th><th>Perfil</th><th>Ações</th></tr>{{range .Users}}<tr><td>{{.ID}}</td><td>{{.Login}}</td><td>{{if .Admin}}Administrador{{else}}Operador{{end}}</td><td><form class="inline" method="post" action="/usuarios/senha"><input type="hidden" name="id" value="{{.ID}}"><input name="senha" placeholder="Nova senha"><button class="btn gray">Alterar senha</button></form>{{if not .Admin}} <form class="inline" method="post" action="/usuarios/excluir"><input type="hidden" name="id" value="{{.ID}}"><button class="btn red">Excluir</button></form>{{end}}</td></tr>{{end}}</table></div>{{end}}`, view{Title: "Usuários", User: u, Users: us})
 }
@@ -403,7 +415,11 @@ func (a *App) export(w http.ResponseWriter, r *http.Request) {
 	if !ok || !u.Admin {
 		return
 	}
-	rows, _ := a.db.Query(`SELECT id,nome,idade,cidade,email,COALESCE(telefone_fixo,''),COALESCE(telefone_celular,'') FROM clientes ORDER BY nome`)
+	rows, err := a.db.Query(`SELECT id,nome,idade,cidade,email,COALESCE(telefone_fixo,''),COALESCE(telefone_celular,'') FROM clientes ORDER BY nome`)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 	defer rows.Close()
 	w.Header().Set("Content-Type", "text/csv; charset=utf-8")
 	w.Header().Set("Content-Disposition", "attachment; filename=clientes.csv")
@@ -414,6 +430,9 @@ func (a *App) export(w http.ResponseWriter, r *http.Request) {
 		var c Client
 		rows.Scan(&c.ID, &c.Name, &c.Age, &c.City, &c.Email, &c.Phone, &c.Mobile)
 		out.Write([]string{fmt.Sprint(c.ID), c.Name, fmt.Sprint(c.Age), c.City, c.Email, c.Phone, c.Mobile})
+	}
+	if err := rows.Err(); err != nil {
+		return
 	}
 	out.Flush()
 }
