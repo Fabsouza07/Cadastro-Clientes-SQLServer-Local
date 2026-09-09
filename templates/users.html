@@ -1,0 +1,45 @@
+{{define "content"}}
+<div class="top">
+    <h1>Usuários</h1>
+</div>
+<div class="panel form">
+    <h2>Novo operador</h2>
+    <form method="post" action="/usuarios/salvar">
+        <label>Login</label>
+        <input name="login">
+        <label>Senha (mínimo de 8 caracteres)</label>
+        <input type="password" name="senha">
+        <button class="btn">Criar operador</button>
+    </form>
+</div>
+<div class="panel" style="margin-top:18px">
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Login</th>
+            <th>Perfil</th>
+            <th>Ações</th>
+        </tr>
+        {{range .Users}}
+        <tr>
+            <td>{{.ID}}</td>
+            <td>{{.Login}}</td>
+            <td>{{if .Admin}}Administrador{{else}}Operador{{end}}</td>
+            <td>
+                <form class="inline" method="post" action="/usuarios/senha">
+                    <input type="hidden" name="id" value="{{.ID}}">
+                    <input name="senha" placeholder="Nova senha">
+                    <button class="btn gray">Alterar senha</button>
+                </form>
+                {{if not .Admin}}
+                <form class="inline" method="post" action="/usuarios/excluir">
+                    <input type="hidden" name="id" value="{{.ID}}">
+                    <button class="btn red">Excluir</button>
+                </form>
+                {{end}}
+            </td>
+        </tr>
+        {{end}}
+    </table>
+</div>
+{{end}}

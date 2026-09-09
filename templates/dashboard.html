@@ -1,0 +1,55 @@
+{{define "content"}}
+<div class="top">
+    <div>
+        <h1>Visão geral</h1>
+        <span class="muted">Acompanhe e gerencie os clientes cadastrados.</span>
+    </div>
+    <a class="btn" href="/clientes/novo">+ Novo cliente</a>
+</div>
+<div class="cards">
+    <div class="card">Total de clientes<div class="value">{{.Stats.Total}}</div></div>
+    <div class="card">Idade média<div class="value">{{printf "%.1f" .Stats.Average}} anos</div></div>
+    <div class="card">Cliente mais velho<div class="value">{{.Stats.Oldest}}</div></div>
+    <div class="card">Cidade em destaque<div class="value">{{.Stats.City}}</div></div>
+</div>
+<div class="panel">
+    <div class="toolbar">
+        <h2>Clientes cadastrados</h2>
+        <form>
+            <input class="search" name="q" value="{{.Query}}" placeholder="Pesquisar por nome ou cidade">
+        </form>
+    </div>
+    {{if .Clients}}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Idade</th>
+            <th>Cidade</th>
+            <th>E-mail</th>
+            <th>Telefones</th>
+            <th></th>
+        </tr>
+        {{range .Clients}}
+        <tr>
+            <td>{{.ID}}</td>
+            <td>{{.Name}}</td>
+            <td>{{.Age}}</td>
+            <td>{{.City}}</td>
+            <td>{{.Email}}</td>
+            <td>{{.Phone}}<br>{{.Mobile}}</td>
+            <td>
+                <a class="btn gray" href="/clientes/novo?id={{.ID}}">Editar</a>
+                <form class="inline" method="post" action="/clientes/excluir">
+                    <input type="hidden" name="id" value="{{.ID}}">
+                    <button class="btn red" onclick="return confirm('Excluir este cliente?')">Excluir</button>
+                </form>
+            </td>
+        </tr>
+        {{end}}
+    </table>
+    {{else}}
+    <div class="empty">Nenhum cliente encontrado.</div>
+    {{end}}
+</div>
+{{end}}

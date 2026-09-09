@@ -1,0 +1,24 @@
+{{define "content"}}
+<div class="panel form">
+    <h1>{{if .Editing}}Editar cliente{{else}}Cadastrar cliente{{end}}</h1>
+    <form method="post" action="/clientes/salvar">
+        <input type="hidden" name="id" value="{{.Client.ID}}">
+        <label>Nome</label>
+        <input name="nome" value="{{.Client.Name}}">
+        <label>Idade</label>
+        <input type="number" name="idade" value="{{.Client.Age}}">
+        <label>Cidade</label>
+        <input name="cidade" value="{{.Client.City}}">
+        <label>E-mail</label>
+        <input type="email" name="email" value="{{.Client.Email}}">
+        <label>Telefone fixo</label>
+        <input name="fixo" value="{{.Client.Phone}}">
+        <label>Celular</label>
+        <input name="celular" value="{{.Client.Mobile}}">
+        <div class="actions">
+            <button class="btn">Salvar</button>
+            <a class="btn gray" href="/">Cancelar</a>
+        </div>
+    </form>
+</div>
+{{end}}
