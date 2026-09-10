@@ -53,7 +53,7 @@
     {{if .User}}
     <header>
         <a class="brand" href="/">C &nbsp; Cadastro de Clientes</a>
-        <span>{{if .User.Admin}}Administrador{{else}}Operador{{end}}: {{.User.Login}} &nbsp; | &nbsp; <a href="/logout">Sair</a></span>
+        <span>{{if .User.Admin}}Administrador{{else}}Operador{{end}}: {{.User.Login}} &nbsp; | &nbsp; <a href="/logout" title="Trocar de usuário">Trocar Usuário</a> &nbsp; | &nbsp; <a href="/sair" style="color:#f87171;font-weight:600" title="Encerrar aplicação e fechar terminais" onclick="return confirm('Deseja realmente encerrar a aplicação e fechar todos os terminais?');">Sair</a></span>
     </header>
     <div class="layout">
         <nav>

@@ -1,5 +1,6 @@
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
+try { $Host.UI.RawUI.WindowTitle = 'Cadastro de Clientes - IIS Express' } catch {}
 $iis = Join-Path ${env:ProgramFiles} 'IIS Express\iisexpress.exe'
 if (-not (Test-Path $iis)) { throw 'IIS Express não foi encontrado.' }
 if (-not (Get-Command sqllocaldb -ErrorAction SilentlyContinue)) {

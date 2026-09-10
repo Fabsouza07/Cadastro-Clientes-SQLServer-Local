@@ -11,7 +11,10 @@
         <input name="login" autofocus>
         <label>Senha</label>
         <input type="password" name="senha">
-        <button class="btn">Entrar</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+            <button class="btn">Entrar</button>
+            <a href="/sair" style="color:#ef4444;text-decoration:none;font-size:13px" onclick="return confirm('Deseja realmente encerrar a aplicação e fechar todos os terminais?');">Encerrar aplicação</a>
+        </div>
     </form>
 </div>
 {{end}}

@@ -9,6 +9,9 @@ Aplicação web local desenvolvida em **Go (Golang)** conectada ao **Microsoft S
 ### 1. Execução Rápida (Recomendada)
 Basta dar dois cliques no arquivo:
 * **`executar.bat`**: Inicia a instância do LocalDB, sobe a aplicação Go na porta `8080` e abre automaticamente no **Google Chrome**.
+* **`encerrar.bat`**: Encerra imediatamente a aplicação e fecha todos os terminais abertos.
+
+> **Dica**: Você também pode encerrar a aplicação clicando em **Sair** no menu superior ou na tela de login. A saída fecha automaticamente todas as janelas de terminal associadas.
 
 ### 2. Execução via PowerShell
 ```powershell

@@ -1,5 +1,6 @@
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
+try { $Host.UI.RawUI.WindowTitle = 'Cadastro de Clientes - Go' } catch {}
 
 if (-not (Get-Command sqllocaldb -ErrorAction SilentlyContinue)) {
   $tools = Get-ChildItem -Path "${env:ProgramFiles}\Microsoft SQL Server\*\Tools\Binn\SqlLocalDB.exe", "${env:ProgramFiles(x86)}\Microsoft SQL Server\*\Tools\Binn\SqlLocalDB.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
